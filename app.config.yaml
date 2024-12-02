@@ -1,0 +1,17 @@
+application:
+  actions: action
+  web: web-src
+  runtimeManifest:
+    packages:
+      ui-extensibility-prod:
+        license: Apache-2.0
+        actions:
+          react-claims-check-app:
+            function: actions/react-claims-check-app/index.js
+            web: 'yes'
+            runtime: nodejs:18
+            inputs:
+              LOG_LEVEL: debug
+            annotations:
+              require-adobe-https://adobe.enterprise.slack.com/files/U028XTE8X5H/F081K2H2M63/addonthumbnail2.tsx?origin_team=E23RE8G4F&origin_channel=C080Y3GKT39auth: true
+              final: true
