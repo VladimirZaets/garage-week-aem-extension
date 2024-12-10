@@ -15,3 +15,12 @@ application:
             annotations:
               require-adobe-https://adobe.enterprise.slack.com/files/U028XTE8X5H/F081K2H2M63/addonthumbnail2.tsx?origin_team=E23RE8G4F&origin_channel=C080Y3GKT39auth: true
               final: true
+          get-models-list:
+            function: actions/get-models-list/index.js
+            web: 'yes'
+            runtime: nodejs:18
+            require-adobe-auth: false
+            inputs:
+              LOG_LEVEL: debug
+            annotations:
+              final: true

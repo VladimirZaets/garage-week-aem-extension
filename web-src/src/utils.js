@@ -1,8 +1,15 @@
-/* 
+/*
 * <license header>
 */
 
 /* global fetch */
+
+import allActions from './config.json'
+
+
+export const getActionUrl = (action) => {
+  return allActions[action]
+}
 
 /**
  *
@@ -16,7 +23,9 @@
  *
  */
 
-async function actionWebInvoke (actionUrl, headers = {}, params = {}, options = { method: 'POST' }) {
+
+
+export async function actionWebInvoke (actionUrl, headers = {}, params = {}, options = { method: 'POST' }) {
   const actionHeaders = {
     'Content-Type': 'application/json',
     ...headers
@@ -54,4 +63,10 @@ async function actionWebInvoke (actionUrl, headers = {}, params = {}, options = 
   return content
 }
 
-export default actionWebInvoke
+export const getModelsList = async (authToken, aemHost, imsOrg, searchParams) => {
+  return await actionWebInvoke(getActionUrl("get-models-list"), authToken, {
+    aemHost: `https://${aemHost}`,
+    imsOrg,
+    searchParams
+  });
+}
