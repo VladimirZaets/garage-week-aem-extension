@@ -46,16 +46,24 @@ async function main(params) {
     }
     const headers = await getAemHeaders(params);
 
+
     const resp = await fetch(
-      `${params.aemHost}/adobe/sites/cf/models`,
+      `${params.aemHost}/adobe/sites/cf/fragments`,//?${query}
       {
-        method: 'GET',
-        headers: headers
+        method: 'POST',
+        headers: {
+          ...headers,
+          'Content-Type': 'application/json'
+        },
+        body: params.body
       }
-    );
+    ).then(resp => {
+      if (!resp.ok) {
+        throw `Server error: [${resp.status}] [${resp.statusText}] [${resp.url}] [${JSON.stringify(headers)}]`;
+      }
+    })
 
     const data = await resp.json();
-    console.log(data);
 
 
     return {
@@ -66,7 +74,7 @@ async function main(params) {
     // log any server errors
     logger.error(error);
     // return with 500
-    return errorResponse(500, error.toString(), logger);
+    return errorResponse(500, error.toString() + JSON.stringify(params.body), logger);
   }
 }
 

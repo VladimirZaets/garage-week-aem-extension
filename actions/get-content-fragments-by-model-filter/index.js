@@ -45,9 +45,14 @@ async function main(params) {
       return errorResponse(400, errorMessage, logger);
     }
     const headers = await getAemHeaders(params);
+    // const query = new URLSearchParams({
+    //   cursor: 'string',
+    //   limit: '1',
+    // }).toString();
+
 
     const resp = await fetch(
-      `${params.aemHost}/adobe/sites/cf/models`,
+      `${params.aemHost}/adobe/sites/cf/fragments`,
       {
         method: 'GET',
         headers: headers
@@ -55,12 +60,12 @@ async function main(params) {
     );
 
     const data = await resp.json();
-    console.log(data);
+
 
 
     return {
       statusCode: 200,
-      body: data
+      body: data.items.filter(item => item.model?.id === params.modelId)
     };
   } catch (error) {
     // log any server errors

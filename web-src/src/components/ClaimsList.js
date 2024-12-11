@@ -6,7 +6,12 @@ import React from 'react';
 import { Button, Provider, defaultTheme, Flex, View, Heading, Divider, Picker, Item, CheckboxGroup, Checkbox } from '@adobe/react-spectrum';
 import { attach } from "@adobe/uix-guest"
 import { useEffect, useState } from 'react'
-import { getModelsList } from '../utils';
+import {
+  createContentFragment,
+  getContentFragmentByModel,
+  getContentFragmentByModelFilter,
+  getModelsList
+} from '../utils';
 
 export const CLAIMS = [
   "Durable Skin Clearance: PASI 90 response was achieved at Week 24. Response rates observed up to ~4 years",
@@ -37,7 +42,31 @@ export default function ClaimsList() {
       const auth = connection.sharedContext.get("auth");
       const host = connection.sharedContext.get("aemHost");
       console.log("authauthauthauth", auth, host, connection.sharedContext);
-      //await getModelsList();
+      const modelsList = await getModelsList(auth.imsToken, host, auth.imsOrg);
+      //const contentFragmentByModel = await getContentFragmentByModel(auth.imsToken, "author-p109202-e254455-cmstg.adobeaemcloud.com", auth.imsOrg, "L2NvbmYvZ2xvYmFsL3NldHRpbmdzL2RhbS9jZm0vbW9kZWxzL2NsYWltcw");
+      const contentFragmentByModelFilter = await getContentFragmentByModelFilter(auth.imsToken, "author-p109202-e254455-cmstg.adobeaemcloud.com", auth.imsOrg, "L2NvbmYvZ2xvYmFsL3NldHRpbmdzL2RhbS9jZm0vbW9kZWxzL2NsYWltcw");
+      const contentFragment = await createContentFragment(auth.imsToken, "author-p109202-e254455-cmstg.adobeaemcloud.com", auth.imsOrg, {
+        "title": "Superman-01",
+        "name": "superman-cf-01",
+        "parentPath": "/content/dam/garage-week-2024/",
+        "description": "This new CF is created with the new POST endpoint",
+        "modelId": "L2NvbmYvZ2xvYmFsL3NldHRpbmdzL2RhbS9jZm0vbW9kZWxzL2NsYWltcw",
+        "fields": [
+          {
+            "name": "claimText",
+            "type": "long-text"
+          },
+          {
+            "name": "referenceLink",
+            "type": "text"
+          },
+          {
+            "name": "referenceId",
+            "type": "text"
+          }
+        ]
+      })
+      console.log("modelsList", modelsList,"0000", contentFragmentByModel, "0000", contentFragmentByModelFilter)
     })()
   }, [])
 

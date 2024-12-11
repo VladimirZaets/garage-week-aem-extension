@@ -9,7 +9,7 @@ application:
           react-claims-check-app:
             function: actions/react-claims-check-app/index.js
             web: 'yes'
-            runtime: nodejs:18
+            runtime: nodejs:20
             inputs:
               LOG_LEVEL: debug
             annotations:
@@ -18,7 +18,34 @@ application:
           get-models-list:
             function: actions/get-models-list/index.js
             web: 'yes'
-            runtime: nodejs:18
+            runtime: nodejs:20
+            require-adobe-auth: false
+            inputs:
+              LOG_LEVEL: debug
+            annotations:
+              final: true
+          get-content-fragments-by-model-filter:
+            function: actions/get-content-fragments-by-model-filter/index.js
+            web: 'yes'
+            runtime: nodejs:20
+            require-adobe-auth: false
+            inputs:
+              LOG_LEVEL: debug
+            annotations:
+              final: true
+          create-content-fragment:
+            function: actions/create-content-fragment/index.js
+            web: 'yes'
+            runtime: nodejs:20
+            require-adobe-auth: false
+            inputs:
+              LOG_LEVEL: debug
+            annotations:
+              final: true
+          get-content-fragments-by-model:
+            function: actions/get-content-fragments-by-model/index.js
+            web: 'yes'
+            runtime: nodejs:20
             require-adobe-auth: false
             inputs:
               LOG_LEVEL: debug

@@ -25,10 +25,10 @@ export const getActionUrl = (action) => {
 
 
 
-export async function actionWebInvoke (actionUrl, headers = {}, params = {}, options = { method: 'POST' }) {
+export async function actionWebInvoke (actionUrl, authToken, params = {}, options = { method: 'POST' }) {
   const actionHeaders = {
     'Content-Type': 'application/json',
-    ...headers
+    authorization: `Bearer ${authToken}`
   }
 
   const fetchConfig = {
@@ -48,25 +48,62 @@ export async function actionWebInvoke (actionUrl, headers = {}, params = {}, opt
     fetchConfig.body = JSON.stringify(params)
   }
 
-  const response = await fetch(actionUrl, fetchConfig)
-
-  let content = await response.text()
-
-  if (!response.ok) {
-    throw new Error(`failed request to '${actionUrl}' with status: ${response.status} and message: ${content}`)
+  const resp = await fetch(actionUrl, fetchConfig)
+  if (!resp.ok) {
+    throw new Error(
+      'Request to ' + actionUrl + ' failed with status code ' + resp.status
+    )
   }
-  try {
-    content = JSON.parse(content)
-  } catch (e) {
-    // response is not json
-  }
-  return content
+
+  const data = await resp.json()
+  return data
 }
+
 
 export const getModelsList = async (authToken, aemHost, imsOrg, searchParams) => {
   return await actionWebInvoke(getActionUrl("get-models-list"), authToken, {
     aemHost: `https://${aemHost}`,
     imsOrg,
     searchParams
+  });
+}
+
+export const createContentFragment = async (authToken, aemHost, imsOrg, data) => {
+  return await actionWebInvoke(getActionUrl("create-content-fragment"), authToken, {
+    aemHost: `https://${aemHost}`,
+    imsOrg,
+    body: data
+  });
+}
+
+export const getContentFragmentByModelFilter = async (authToken, aemHost, imsOrg, modelId, searchParams) => {
+  return await actionWebInvoke(getActionUrl("get-content-fragments-by-model-filter"), authToken, {
+    aemHost: `https://${aemHost}`,
+    imsOrg,
+    modelId,
+  });
+}
+
+export const getContentFragmentByModel = async (authToken, aemHost, imsOrg, modelId, searchParams) => {
+  const filter = JSON.stringify({
+    filter: {
+      fullText: {
+        queryMode: "EXACT_WORDS"
+      },
+      modelIds: [modelId]
+    }
+  });
+
+  const params = searchParams ? {
+    ...searchParams,
+    query: filter,
+  } : {
+    query: filter
+  }
+
+  return await actionWebInvoke(getActionUrl("get-content-fragments-by-model"), authToken, {
+    aemHost: `https://${aemHost}`,
+    imsOrg,
+    params
   });
 }

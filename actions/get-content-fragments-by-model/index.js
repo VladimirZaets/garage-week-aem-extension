@@ -45,23 +45,34 @@ async function main(params) {
       return errorResponse(400, errorMessage, logger);
     }
     const headers = await getAemHeaders(params);
+    const query = new URLSearchParams({
+      query: JSON.stringify(JSON.parse(params.params?.query))
+    });
+
 
     const resp = await fetch(
-      `${params.aemHost}/adobe/sites/cf/models`,
+      //`${params.aemHost}/adobe/sites/cf/fragments/search?query=${JSON.stringify(JSON.parse(params.params.query))}`,
+      `${params.aemHost}/adobe/sites/cf/fragments/search?${query.toString()}`,
       {
         method: 'GET',
-        headers: headers
-      }
-    );
+        headers: {
+          ...headers,
+          'Content-Type': 'application/json'
+        }
+      })
+    // ).then(resp => {
+    //   if (!resp.ok) {
+    //     throw `Server error: [${resp.status}] [${resp.statusText}] [${resp.url}] [${JSON.stringify(headers)}]`;
+    //   }
+    // })
 
-    const data = await resp.json();
-    console.log(data);
-
+    const data = await resp.text();
 
     return {
       statusCode: 200,
       body: data
     };
+
   } catch (error) {
     // log any server errors
     logger.error(error);
